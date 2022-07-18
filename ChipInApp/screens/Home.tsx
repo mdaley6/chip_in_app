@@ -13,7 +13,7 @@ export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
         <AllChips></AllChips>
         <View style={{flexDirection: 'row',borderWidth:2,minWidth:'100%',justifyContent:'space-around'}}>
         <ChipTotals total={9} longest={104}></ChipTotals>{/*Need these to be real*/}
-        <Button title="Add Chip" onPress={() => navigation.navigate('Modal')}/>
+        <Button title="Add Chip" onPress={() => navigation.navigate('AddChip')}/>
         </View>
     </View>
   );
@@ -49,8 +49,9 @@ const handleAddChip = () =>{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'flex-start',
+    padding:1,
   },
   title: {
     width: '100%',
