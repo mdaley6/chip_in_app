@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, Button, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -17,65 +17,57 @@ const Chip = (props: any) =>  {
     );
 };
 
+//need to actually implement this
 const handleEdit = (id: number) => {
     console.log("edit " + id);
 }
 
-// var chips = [<Chip key="1" number={1} club='60 degree' distance={87} course='Shannopin' score='Birdie (3)'/>,
-//              <Chip key="2" number={2} club='54 degree' distance={18} course='South Park' score='Birdie (4)'/>,
-//              <Chip key="3" number={3} club='54 degree' distance={12} course='Shannopin' score='Par (4)'/>,
-//              <Chip key="4" number={4} club='60 degree' distance={25} course='Moon' score='Birdie (2)'/>,
-//              <Chip key="5" number={5} club='60 degree' distance={43} course='Shannopin' score='Bogey (5)'/>,
-//              <Chip key="6" number={6} club='p wedge' distance={19} course='Grandview' score='Eagle (3)'/>,
-//              <Chip key="7" number={7} club='a wedge' distance={32} course='Westwood' score='Birdie (4)'/>,
-//              <Chip key="8" number={8} club='60 degree' distance={104} course='Ponderosa' score='Par (5)'/>,
-//              <Chip key="9" number={9} club='60 degree' distance={19} course='Shannopin' score='Birdie (3)'/>];
 
 
+// for(let i = 0; i < keys.length; i++){
+//     const chipString = await AsyncStorage.getItem(keys[i]);
+//     const chipObject = chipString != null ? JSON.parse(chipString) : null
+//     chips.push(<Chip key={i} number={i} club={chipObject.club} distance={chipObject.distance} course={chipObject.course} score={score + ' ('+chipObject.score+')'}/>)
+// }
 
-const AllChips = async () => {
-    //const num_chips = chips.length;
-    const keys = await AsyncStorage.getAllKeys();
-    const chips = [];
-   
 
-    for(let i = 0; i < keys.length; i++){
-        const chipString = await AsyncStorage.getItem(keys[i]);
-        const chipObject = chipString != null ? JSON.parse(chipString) : null
-        var score;
-        const diff = chipObject.score - chipObject.par
-        if(diff == 0){
-            score = "par"
-        }
-        else if(diff == -1){
-            score = "birdie"
-        }
-        else if(diff == -2 ){
-            score = "eagle"
-        }
-        else if(diff == 1){
-            score = "bogey"
-        }
-        else{
-            score = "double"
-        }
+const AllChips = () => {
+    const [total,setTotal] = useState(0);
+    const [chipArray,setChipArray] = useState([]);
 
-        chips.push(<Chip key={i} number={i} club={chipObject.club} distance={chipObject.distance} course={chipObject.course} score={score + ' ('+chipObject.score+')'}/>)
+    var chipData: { key: { i: number; }; number: { i: number; }; club: { club: string | null; }; distance: { distance: string | null; }; course: { course: string | null; }; score: { score: string | null; }; }[] = [];
+
+    const getTotal = async () => {
+        let total = await AsyncStorage.getItem('@total')
+        total == null ? null : setTotal(parseInt(total))
     }
-
-    console.log(typeof(chips))
-    console.log(chips[0])
+    const setChipData = async () => {
+        for(let i = 1; i < total+1; i++) {
+            let course = await AsyncStorage.getItem('@chip'+i+'course')
+            let club = await AsyncStorage.getItem('@chip'+i+'club')
+            let distance = await AsyncStorage.getItem('@chip'+i+'distance')
+            let score = await AsyncStorage.getItem('@chip'+i+'score')
+            let par = await AsyncStorage.getItem('@chip'+i+'par')
+            console.log("adding chip comp" + i)
+            chipData.push({key:{i}, number:{i}, club:{club}, distance:{distance}, course:{course}, score:{score}})
+        }
+        //console.log(chipData[0])
+        setChipArray(chipData)
+    }
+    setChipData();
+    getTotal();
     
+    //console.log(chipData[0])
 
     return (
         <ScrollView style={styles.allChips}>
-            {/*This shit makes chips an array of objects, not components*/}
-            {/*So may need to map something to Chip components here*/}
-            {chips}
+          {chipArray.length == 0 ? <Text>No Chip-ins Yet</Text>:
+          chipArray.map((data,key) => (
+              <Chip key={key}/>
+          ))}
         </ScrollView>
     );
 };
-
 
 const styles = StyleSheet.create({
     chip: {
@@ -96,3 +88,14 @@ const styles = StyleSheet.create({
   });
 
 export default AllChips;
+
+
+// var chips = [<Chip key="1" number={1} club='60 degree' distance={87} course='Shannopin' score='Birdie (3)'/>,
+//              <Chip key="2" number={2} club='54 degree' distance={18} course='South Park' score='Birdie (4)'/>,
+//              <Chip key="3" number={3} club='54 degree' distance={12} course='Shannopin' score='Par (4)'/>,
+//              <Chip key="4" number={4} club='60 degree' distance={25} course='Moon' score='Birdie (2)'/>,
+//              <Chip key="5" number={5} club='60 degree' distance={43} course='Shannopin' score='Bogey (5)'/>,
+//              <Chip key="6" number={6} club='p wedge' distance={19} course='Grandview' score='Eagle (3)'/>,
+//              <Chip key="7" number={7} club='a wedge' distance={32} course='Westwood' score='Birdie (4)'/>,
+//              <Chip key="8" number={8} club='60 degree' distance={104} course='Ponderosa' score='Par (5)'/>,
+//              <Chip key="9" number={9} club='60 degree' distance={19} course='Shannopin' score='Birdie (3)'/>];

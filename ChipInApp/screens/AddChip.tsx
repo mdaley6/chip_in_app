@@ -2,34 +2,66 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput,Button } from 'react-native';
 import { Text, View } from '../components/Themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RootTabScreenProps } from '../types';
 
-
-export default function AddChip() {
-  //need to do some form validation
+export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
   const [course,setCourse] = useState('');
   const [club,setClub] = useState('');
   const [distance,setDistance] = useState('');
   const [score,setScore] = useState('');
   const [par,setPar] = useState('');
 
+  //determine the golf score based on the par
+  const getScore = () => {
+    const diff = parseInt(score) - parseInt(par);
+    if(diff == 0){
+      return "par"
+    }
+    else if(diff == -1){
+      return "birdie"
+    }
+    else if(diff == -2 ){
+      return "eagle"
+    }
+    else if(diff == 1){
+      return "bogey"
+    }
+    else{
+      return "double"
+    }
+  }
+
   function addChipIn() {
+    //need to do better form validation
     if(course === ''||score === ''|| club === ''|| distance ===''||par === ''){
       alert('Please enter all fields before trying to save the shot');
     }
     else{
-      //store chip as JSON
-      var chip = new Object({course: course, club: club,distance : distance,score: score,par: par});
-      storeData(chip);
-      }
-    //TODO: route user back to home page
+      storeChip();
     }
+    navigation.navigate('Home')
+  }
 
   //store function for chip ins
-  const storeData = async (chip: object) => {
+  const storeChip = async () => {
     try {
-      const jsonValue = JSON.stringify(chip)
-      //TODO: Set a good key & clear the old storage with shit (@chip1key)
-      await AsyncStorage.setItem('@chip'+1, jsonValue)
+      const total = await AsyncStorage.getItem('@total');
+      const longest = await AsyncStorage.getItem('@longest');
+      
+      //save the chip & iterate total
+      if(total != null){
+        let totalAsInt = parseInt(total);
+        await AsyncStorage.setItem('@total',String(totalAsInt+1))
+        await AsyncStorage.setItem('@chip'+(totalAsInt+1)+'course', course)
+        await AsyncStorage.setItem('@chip'+(totalAsInt+1)+'club', club)
+        await AsyncStorage.setItem('@chip'+(totalAsInt+1)+'distance', distance)
+        await AsyncStorage.setItem('@chip'+(totalAsInt+1)+'score', getScore())
+        await AsyncStorage.setItem('@chip'+(totalAsInt+1)+'par', par)
+      }
+      //maybe update longest
+      if(longest != null && distance > longest){
+        await AsyncStorage.setItem('@longest', distance)
+      }
       alert("New Chip Saved")
     } catch (e) {
       alert("Error Saving Chip")

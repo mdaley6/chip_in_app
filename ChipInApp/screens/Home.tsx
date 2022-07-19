@@ -1,23 +1,48 @@
-import React from 'react';
-import { Button, FlatList, Pressable, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllChips from '../components/AllChips';
 
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
 export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
+  const [total , setTotalChips] = useState(0);
+  const [longest, setLongestChip] = useState(0)
+
+  const getTotals = async () => {
+    //get total chips
+    await AsyncStorage.getItem('@total').then((total) => {
+      if(total !=  null) setTotalChips(parseInt(total))
+      //console.log("total (display) set: " + total)
+    }).catch(() => {
+      alert("Error retrieving chip data")
+    })
+    //get longest chip
+    await AsyncStorage.getItem('@longest').then((longest) => {
+      if(longest !=  null) setLongestChip(parseInt(longest))
+      //console.log("longest (display) set: " + longest)
+    }).catch(() => {
+      alert("Error retrieving chip data")
+    })
+  
+  }
+
+  getTotals();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Chip Ins</Text>
         <AllChips></AllChips>
-        <View style={{flexDirection: 'row',borderWidth:2,minWidth:'100%',justifyContent:'space-around'}}>
-        <ChipTotals total={9} longest={104}></ChipTotals>{/*Need these to be real*/}
+        <View style={styles.midPage}>
+        <ChipTotals total={total} longest={longest}></ChipTotals>{/*Need these to be real*/}
         <Button title="Add Chip" onPress={() => navigation.navigate('AddChip')}/>
+        <Button title="Refresh" onPress={getTotals}/>
         </View>
     </View>
   );
 }
+
 
 const ChipTotals = (props: any) => {
   return (
@@ -27,24 +52,6 @@ const ChipTotals = (props: any) => {
       </View>
   );
 };
-
-// const AddChip = ({navigation}) => {
-//   //use state hooks here
-//   return (
-//       // <Button title="Add Chip In" onPress={handleAddChip}/>
-//       <Button title="Add Chip"
-//       onPress={() =>
-//         navigation.navigate('Profile', { name: 'Jane' })
-//       }/>
-//   );
-// };
-
-const handleAddChip = () =>{
-  console.log("add chip")
-  return (
-    <Text>Fucks</Text>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -66,4 +73,11 @@ const styles = StyleSheet.create({
   },
   chip:{
   },
+  midPage:{
+    flexDirection: 'row',
+    borderWidth:2,
+    minWidth:'100%',
+    justifyContent:'space-around'
+  },  
 });
+
