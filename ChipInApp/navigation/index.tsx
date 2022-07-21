@@ -15,7 +15,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import AddChip from '../screens/AddChip';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import Home from '../screens/Home';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import StatsScreen from '../screens/StatsScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -67,15 +67,15 @@ function BottomTabNavigator() {
         component={Home}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
+        name="Stats"
+        component={StatsScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Stats',
+          tabBarIcon: ({ color }) => <TabBarIcon name="bar-chart" color={color} />,
         }}
       />
     </BottomTab.Navigator>

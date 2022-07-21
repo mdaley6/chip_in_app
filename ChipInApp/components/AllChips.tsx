@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Button, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Button, ScrollView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chip = (props: {number: number, course: string, club:string, distance:string, score:string }) =>  {
@@ -10,8 +10,8 @@ const Chip = (props: {number: number, course: string, club:string, distance:stri
     if(props.score == 'Double') color = 'darkred'
 
     return (
-        <View  style={styles.chip}>
-        <View  style={styles.chipSub}>
+        <View style={styles.chip}>
+        <View style={styles.chipSub}>
             <Text style={styles.number}>{props.number}</Text>
             <View>
                 <Text style={styles.text}>Club: {props.club}</Text>
@@ -20,7 +20,9 @@ const Chip = (props: {number: number, course: string, club:string, distance:stri
                 <Text style={styles.text}>For: <Text style={{color: color}}>{props.score}</Text></Text>
             </View>
         </View>
-        <Button title="Edit" onPress={() => handleEdit(props.number)}/>
+        <TouchableOpacity style={styles.button} onPress={() => handleEdit(props.number)}>
+            <Text style={styles.buttonText}>Edit</Text>
+        </TouchableOpacity>
         </View>
     );
 };
@@ -28,13 +30,10 @@ const Chip = (props: {number: number, course: string, club:string, distance:stri
 //need to actually implement this
 const handleEdit = (id: number) => {
     console.log("edit " + id);
-
-
+    //get the data for this chip 
+    //allow them to overwrite it (may need an edit screen or pop up)
 }
 
-interface AllChipProps {
-	chipData9: {club: string, distance: string, course: string, score: string}[];
-}
 
 export const AllChips = () => {
     const [chips, setChips] = useState<{club: string, distance: string, course: string, score: string}[]>([]);
@@ -98,7 +97,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 2,
-        borderWidth:1,
+        borderBottomWidth:1,
+        borderColor:'blue',
         width:'100%'
     },
     chipSub: {
@@ -116,14 +116,27 @@ const styles = StyleSheet.create({
     },
     number:{
         fontSize:25,
+        //fontWeight: 'bold',
         borderWidth:2,
-        borderColor: 'blue',
+        borderColor: 'gold',
         borderRadius: 10,
+        color:'blue',
         padding:6,
         marginLeft:3,
         marginRight:30,
-        backgroundColor:'gainsboro',
+       // backgroundColor:'blue',
         overflow: 'hidden'
+    },
+    button:{
+        borderWidth: 2,
+        borderColor:'gold',
+        padding: 5,
+        borderRadius: 10,
+        marginRight:4,
+    },
+    buttonText:{
+        fontSize:18,
+        color:'#448ff2',
     }
   });
 

@@ -9,7 +9,6 @@ import { RootTabScreenProps } from '../types';
 export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
   const [total , setTotalChips] = useState(0);
   const [longest, setLongestChip] = useState(0);
-  const [chipData, setChipData] = useState([]);
 
   const getTotals = async () => {
 
@@ -37,7 +36,7 @@ export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
         <View style={styles.midPage}>
         <ChipTotals total={total} longest={longest}></ChipTotals>{/*Need these to be real*/}
         <Button title="Add Chip" onPress={() => navigation.navigate('AddChip')}/>
-        <Button title="Refresh" onPress={getTotals}/>
+        <Button title="Calc Totals" onPress={getTotals}/>
         </View>
     </View>
   );
