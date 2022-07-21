@@ -3,6 +3,7 @@ import { StyleSheet, TextInput,Button } from 'react-native';
 import { Text, View } from '../components/Themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootTabScreenProps } from '../types';
+import { getServerSideProps } from '../components/AllChips';
 
 export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
   const [course,setCourse] = useState('');
@@ -15,19 +16,19 @@ export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
   const getScore = () => {
     const diff = parseInt(score) - parseInt(par);
     if(diff == 0){
-      return "par"
+      return "Par"
     }
     else if(diff == -1){
-      return "birdie"
+      return "Birdie"
     }
     else if(diff == -2 ){
-      return "eagle"
+      return "Eagle"
     }
     else if(diff == 1){
-      return "bogey"
+      return "Bogey"
     }
     else{
-      return "double"
+      return "Double"
     }
   }
 
@@ -59,10 +60,12 @@ export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
         await AsyncStorage.setItem('@chip'+(totalAsInt+1)+'par', par)
       }
       //maybe update longest
+      console.log("Longest: " + longest + " This: " + distance)
       if(longest != null && distance > longest){
         await AsyncStorage.setItem('@longest', distance)
       }
       alert("New Chip Saved")
+      getServerSideProps();
     } catch (e) {
       alert("Error Saving Chip")
     }

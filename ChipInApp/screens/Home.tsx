@@ -12,6 +12,8 @@ export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
   const [chipData, setChipData] = useState([]);
 
   const getTotals = async () => {
+
+    console.log("Get Totals Fired")
     //get total chips
     await AsyncStorage.getItem('@total').then((total) => {
       if(total !=  null) setTotalChips(parseInt(total))
@@ -65,8 +67,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color:'blue',
-    borderWidth: 2,
-    borderColor:'lightblue',
+    borderWidth: 3,
+    borderColor:'goldenrod',
     padding:2,
   },
   chip:{
