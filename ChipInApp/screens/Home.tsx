@@ -8,7 +8,8 @@ import { RootTabScreenProps } from '../types';
 
 export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
   const [total , setTotalChips] = useState(0);
-  const [longest, setLongestChip] = useState(0)
+  const [longest, setLongestChip] = useState(0);
+  const [chipData, setChipData] = useState([]);
 
   const getTotals = async () => {
     //get total chips
@@ -16,19 +17,16 @@ export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
       if(total !=  null) setTotalChips(parseInt(total))
       //console.log("total (display) set: " + total)
     }).catch(() => {
-      alert("Error retrieving chip data")
+      alert("Error retrieving total chip-ins")
     })
     //get longest chip
     await AsyncStorage.getItem('@longest').then((longest) => {
       if(longest !=  null) setLongestChip(parseInt(longest))
       //console.log("longest (display) set: " + longest)
     }).catch(() => {
-      alert("Error retrieving chip data")
+      alert("Error retrieving longest chip")
     })
-  
   }
-
-  getTotals();
 
   return (
     <View style={styles.container}>
