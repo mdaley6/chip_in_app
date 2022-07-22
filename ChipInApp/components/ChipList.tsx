@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Button, ScrollView, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAllChipData } from '../Api';
+
 
 const Chip = (props: {number: number, course: string, club:string, distance:string, score:string }) =>  {
     var color = 'black'
@@ -34,18 +35,15 @@ const handleEdit = (id: number) => {
     //allow them to overwrite it (may need an edit screen or pop up)
 }
 
-
-export const AllChips = () => {
+export const ChipList = () => {
     const [chips, setChips] = useState<{club: string, distance: string, course: string, score: string}[]>([]);
 
     useEffect(()=>{
-        getServerSideProps().then((value) => {value == undefined ? setChips([]) : setChips(value)}).catch((err) => {console.log(err)})
+        getAllChipData().then((value) => {value == undefined ? setChips([]) : setChips(value)}).catch((err) => {console.log(err)})
     },[])
-
-    console.log("All Chips Fired") 
     
     return (
-        <ScrollView style={styles.allChips} onScrollToTop={getServerSideProps}>
+        <ScrollView style={styles.allChips}>
             {/* {chippers} */}
             { chips.length == 0 ? <Text>No Chip Ins</Text> : chips.map((data,index) => {
                 return <Chip key={index+1} number={index+1} course={data.course} club={data.club} distance={data.distance} score={data.score}/>
@@ -54,41 +52,6 @@ export const AllChips = () => {
         </ScrollView>
     );
 };
-
-//instead of this need to useEffect??
-export const getServerSideProps = async () => {
-    console.log("getServerSideProps")
-    let totalChips = await AsyncStorage.getItem('@total').then((total) => { 
-            return total !== null ? parseInt(total) : 0
-    })
-
-    var chipData: {club: string, distance: string, course: string, score: string}[] | undefined;
-    if(totalChips > 0){
-        for(let i = 1;i < totalChips+1; i++){
-
-            let course = await AsyncStorage.getItem('@chip'+i+'course')
-            let club = await AsyncStorage.getItem('@chip'+i+'club')
-            let distance = await AsyncStorage.getItem('@chip'+i+'distance')
-            let score = await AsyncStorage.getItem('@chip'+i+'score')
-            //let par = await AsyncStorage.getItem('@chip'+i+'par')
-
-            Promise.all([course,club,distance,score]).then((values) => {
-              if(club != null && course != null && distance != null && score != null){
-                    if(chipData === undefined){
-                        chipData = [{club:club, distance:distance, course:course, score:score}];
-                    }
-                    else{
-                        chipData.push({club:club, distance:distance, course:course, score:score})
-                    }
-                }
-            })
-      
-          }
-          if(chipData !== undefined){
-            return chipData
-          }
-    }
-}
 
 const styles = StyleSheet.create({
     chip: {
@@ -140,4 +103,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default AllChips;
+export default ChipList;

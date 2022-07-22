@@ -1,33 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AllChips from '../components/AllChips';
+import AllChips from '../components/ChipList';
 
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
+import { getTotals } from '../Api';
+
 
 export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
   const [total , setTotalChips] = useState(0);
   const [longest, setLongestChip] = useState(0);
 
-  const getTotals = async () => {
+  useEffect(() => {
+    getTotals().then((totals) => { 
+      setTotalChips(totals.total)
+      setLongestChip(totals.longest)})
+  })
 
-    console.log("Get Totals Fired")
-    //get total chips
-    await AsyncStorage.getItem('@total').then((total) => {
-      if(total !=  null) setTotalChips(parseInt(total))
-      //console.log("total (display) set: " + total)
-    }).catch(() => {
-      alert("Error retrieving total chip-ins")
-    })
-    //get longest chip
-    await AsyncStorage.getItem('@longest').then((longest) => {
-      if(longest !=  null) setLongestChip(parseInt(longest))
-      //console.log("longest (display) set: " + longest)
-    }).catch(() => {
-      alert("Error retrieving longest chip")
-    })
-  }
 
   return (
     <View style={styles.container}>
@@ -36,7 +26,6 @@ export default function Home({ navigation }: RootTabScreenProps<'Home'>) {
         <View style={styles.midPage}>
         <ChipTotals total={total} longest={longest}></ChipTotals>{/*Need these to be real*/}
         <Button title="Add Chip" onPress={() => navigation.navigate('AddChip')}/>
-        <Button title="Calc Totals" onPress={getTotals}/>
         </View>
     </View>
   );

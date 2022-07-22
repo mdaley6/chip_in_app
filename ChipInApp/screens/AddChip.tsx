@@ -3,7 +3,6 @@ import { StyleSheet, TextInput,Button } from 'react-native';
 import { Text, View } from '../components/Themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootTabScreenProps } from '../types';
-import { getServerSideProps } from '../components/AllChips';
 
 export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
   const [course,setCourse] = useState('');
@@ -65,7 +64,7 @@ export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
         await AsyncStorage.setItem('@longest', distance)
       }
       alert("New Chip Saved")
-      getServerSideProps();
+      //getServerSideProps();
     } catch (e) {
       alert("Error Saving Chip")
     }

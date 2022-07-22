@@ -11,6 +11,7 @@ export default function App() {
   const colorScheme = useColorScheme();
   
   const checkStorage = async () => {
+    console.log("Running checkStorage");
     try{
       const total = await AsyncStorage.getItem('@total');
       const longest = await AsyncStorage.getItem('@longest');
