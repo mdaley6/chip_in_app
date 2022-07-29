@@ -12,7 +12,14 @@ export default function StatsScreen() {
   const [total , setTotalChips] = useState(0);
   const [longest, setLongestChip] = useState(0);
   const [chipData, setChips] = useState<{club: string, distance: string, course: string, score: string}[]>([]);
-  const [average, setAverageChip] = useState(0);
+  const [averageDist, setAverageDist] = useState(0);
+  const [totalDist, setTotalDist] = useState(0);
+  const [doubles, setDoubles] = useState(-1);
+  const [bogeys, setBogeys] = useState(-1);
+  const [pars, setPars] = useState(-1);
+  const [birdies, setBirdies] = useState(-1);
+  const [eagles, setEagles] = useState(-1);
+  
 
   useEffect(()=>{
       getAllChipData().then((value) => {value == undefined ? setChips([]) : setChips(value)}).catch((err) => {console.log(err)})
@@ -26,29 +33,42 @@ export default function StatsScreen() {
 
   //do all the stats here (make new fn)
   if(chipData.length > 0){
-    var avg = 0;
+    var cumulative=0,dubs=0,bogs=0,par=0,bird=0,eag = 0;
     for(let i = 0; i < chipData.length; i++){
-      avg += parseInt(chipData[i].distance)
+      cumulative += parseInt(chipData[i].distance)
+      if(chipData[i].score == 'Double') dubs += 1
+      else if(chipData[i].score == 'Bogey') bogs += 1
+      else if(chipData[i].score == 'Par') par += 1
+      else if(chipData[i].score == 'Birdie') bird += 1
+      else if(chipData[i].score == 'Eagle') eag += 1
     }
-    if(average == 0) setAverageChip(avg/chipData.length)
+    if(averageDist == -1) setAverageDist(cumulative/chipData.length)
+    if(totalDist == -1) setTotalDist(cumulative)
+    if(doubles == -1) setDoubles(dubs)
+    if(bogeys == -1) setBogeys(bogs)
+    if(pars == -1) setPars(par)
+    if(birdies == -1) setBirdies(bird)
+    if(eagles == -1) setEagles(eag)
+    
   }
   
   return (
     <View style={styles.container}>
       <View style={styles.stats}>
-        <Text>Total: {total}</Text>
-        <Text>Total distance:</Text>
-        <Text>Average Distance: {average}</Text>
-        <Text>Longest: {longest}</Text>
-        <Text>Score Stats</Text>
-        <Text>Double's: </Text>
-        <Text>Bogeys:</Text>
-        <Text>Pars:</Text>
-        <Text>Birdies:</Text>
-        <Text>Eagles:</Text>
-        <Text>Club Stats</Text>
-        <Text>Course Stats:</Text>
-        <Text>Some Hole Stats??</Text>      
+        <Text style={styles.heading}>Overview</Text>
+        <Text style={styles.stat}>Total: {total}</Text>
+        <Text style={styles.stat}>Total Distance: {totalDist}</Text>
+        <Text style={styles.stat}>Average Distance: {averageDist}</Text>
+        <Text style={styles.stat}>Longest: {longest}</Text>
+        <Text style={styles.heading}>Score Stats</Text>
+        <Text style={styles.stat}>Doubles: {doubles}</Text>
+        <Text style={styles.stat}>Bogeys: {bogeys}</Text>
+        <Text style={styles.stat}>Pars: {pars}</Text>
+        <Text style={styles.stat}>Birdies: {birdies}</Text>
+        <Text style={styles.stat}>Eagles: {eagles}</Text>
+        <Text style={styles.stat}>Club Stats</Text>
+        <Text style={styles.stat}>Course Stats:</Text>
+        <Text style={styles.stat}>Some Hole Stats??</Text>      
       </View>
     </View>
   );
@@ -59,16 +79,29 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    backgroundColor:'gray',
   },
   stats: {
     flex:1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
-    borderWidth:1,
     width:'80%',
-  }
+    backgroundColor:'lightgray',
+  },
+  stat:{
+    fontSize: 20,
+    fontWeight: '500',
+    color:'gold',
+    backgroundColor:'dodgerblue',
+    borderRadius: 10,
+    overflow: 'hidden',
+    padding:4,
+    marginTop: 6,
+    width:'80%',
+  },
+  heading: {
+    fontSize:30,
+    fontWeight: '700',
+    marginTop:15, 
+  },
 });
