@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput,Button } from 'react-native';
 import { Text, View } from '../components/Themed';
+import {Select, Option} from "react-native-chooser";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { RootTabScreenProps } from '../types';
 
 export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
@@ -87,13 +89,17 @@ export default function AddChip({ navigation }: RootTabScreenProps<'Home'>) {
         placeholder='Club Used'
         onChangeText={setClub}
       />
+      {/*Need to do this*/}
+      <Select>Ah</Select>
+      {/*Need to do this*/}
       <Text>Distance</Text>
       <TextInput
       // Needs to be numerics (could make this buttons u need to press one)
         style={styles.input}
         value={distance}
         placeholder='Distance (Yards)'
-        onChangeText={setDistance}
+        onChangeText={(text) => {setDistance(text.replace(/[^0-9]/g, ''))}}
+        keyboardType='number-pad'
       />
       <Text>Score</Text>
       <View style={styles.buttonRow}>

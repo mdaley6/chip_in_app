@@ -41,10 +41,12 @@ export default function StatsScreen() {
       else if(chipData[i].score == 'Par') par += 1
       else if(chipData[i].score == 'Birdie') bird += 1
       else if(chipData[i].score == 'Eagle') eag += 1
+
+      console.log(chipData[i].club)
     }
     //idk if this is the way to do this (like initial set state to -1 and update ?)
-    if(averageDist == -1) setAverageDist(cumulative/chipData.length)
-    if(totalDist == -1) setTotalDist(cumulative)
+    if(averageDist == 0) setAverageDist(cumulative/chipData.length)
+    if(totalDist == 0) setTotalDist(cumulative)
     if(doubles == -1) setDoubles(dubs)
     if(bogeys == -1) setBogeys(bogs)
     if(pars == -1) setPars(par)
